@@ -36,8 +36,7 @@ class RssGenerator
 	}
 
 	# set photo link
-	$parseUrl = parse_url("http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-	$photoUrl = $parseUrl['scheme'] . "://" . $parseUrl['host'] . ":" . $parseUrl['port'] . $parseUrl['path'] . "../../#" . $photo['albumId'] . "/" . $photo['photoId'];
+	$photoUrl = $this->getCurrentUrl() . $parseUrl['path'] . "../../#" . $photo['albumId'] . "/" . $photo['photoId'];
 	$newItem->setLink($photoUrl);
 
 	# set photo upload date
@@ -50,12 +49,17 @@ class RssGenerator
     private function prepareFeed($title) {
 	$feed = new RSS2;
 	$feed->setTitle($title);
-	$feed->setLink('http://TODO/lychee/plugins/rss');
+	$feed->setLink($this->getCurrentUrl());
 	$feed->setDescription('This feed contains the latest lychee photos');
 	$feed->setDate(date(DATE_RSS, time()));
 	$feed->setChannelElement('pubDate', date(\DATE_RSS, strtotime('today midnight')));
 	
 	return $feed;
+    }
+    
+    private function getCurrentUrl() {
+	$parseUrl = parse_url("http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+	return $parseUrl['scheme'] . "://" . $parseUrl['host'] . ":" . $parseUrl['port'] . $parseUrl['path'];
     }
 }
 ?>
