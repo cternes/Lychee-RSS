@@ -4,7 +4,7 @@
 # @author		cternes
 # @copyright		2014 by cternes
 # @version		1.0.0
-# @description		
+# @description		This plugin generates an RSS feed out of your latest public photos
 ###
 
 # Config
@@ -29,11 +29,36 @@ defineTablePrefix($dbTablePrefix);
 # Set Mime Type
 header('Content-type: application/rss+xml');
 
-# Get latest photos
-$dataProvider = new DataProvider($dbHost, $dbUser, $dbPassword, $dbName);
-$photos = $dataProvider->getPhotostream();
-
-# Generate RSS
 $rssGenerator = new RssGenerator();
-echo $rssGenerator->buildRssFeedLatestPhotos($photos);
+$dataProvider = new DataProvider($dbHost, $dbUser, $dbPassword, $dbName);
+# If a album name is provided, we'll create a feed only for this album
+if(!empty($_GET['album'])) {
+    $albums = $dataProvider->getPublicAlbums();
+    $albumId = getAlbumIdByName($albums, $_GET['album']);
+    
+    if(empty($albumId)) {
+	die('Could not find an album with title: ' .$_GET['album']);
+    }
+    
+    $photos = $dataProvider->getPhotosByAlbum($albumId);
+    # Generate RSS
+    echo $rssGenerator->buildRssFeedForAlbum($_GET['album'], $photos);
+}
+# If no album name is provided, we'll create a feed with all public photos
+else {
+    # Get latest photos
+    $photos = $dataProvider->getPhotostream();
+
+    # Generate RSS
+    echo $rssGenerator->buildRssFeedLatestPhotos($photos);
+}
+
+function getAlbumIdByName($albums, $name) {
+    foreach ($albums['content'] as $album) {
+	if(strtolower($album['title']) === strtolower($name)) {
+	    return $album['id'];
+	}
+    }
+}
+
 ?>
