@@ -37,7 +37,7 @@ if(!empty($_GET['album'])) {
     $albumId = getAlbumIdByName($albums, $_GET['album']);
     
     if(empty($albumId)) {
-	die('Could not find an album with title: ' .$_GET['album']);
+	die('Could not find a public album with title: ' .$_GET['album'] . '. Please make sure that this album exists and that it is public!');
     }
     
     $photos = $dataProvider->getPhotosByAlbum($albumId);
