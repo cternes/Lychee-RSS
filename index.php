@@ -12,7 +12,7 @@ if (file_exists('config.ini')) {
     $config = parse_ini_file('config.ini');
 }
 else {
-    exit('Error: config.ini not found');
+    die('Error: config.ini not found');
 }
 
 # Include
@@ -23,13 +23,10 @@ require('RssGenerator.php');
 require('DataProvider.php');
 require('vendor/autoload.php');
 
-# Define
-defineTablePrefix($dbTablePrefix);
-
 # Set Mime Type
 header('Content-type: application/rss+xml');
 
-$rssGenerator = new RssGenerator();
+$rssGenerator = new RssGenerator($config);
 $dataProvider = new DataProvider($dbHost, $dbUser, $dbPassword, $dbName);
 # If a album name is provided, we'll create a feed only for this album
 if(!empty($_GET['album'])) {

@@ -4,9 +4,33 @@ use \FeedWriter\RSS2;
 
 class RssGenerator
 {
+    private $generalTitle = null;
+    private $generalDescription = null;
+    private $titlePerAlbum = null;
+    private $descriptionPerAlbum = null;
+    
+    public function __construct($config) {
+	if(empty($config['rssTitle'])) {
+	    die('Error: rssTitle not set in config.ini');
+	}
+	if(empty($config['rssDescription'])) {
+	    die('Error: rssDescription not set in config.ini');
+	}
+	if(empty($config['rssTitlePerAlbum'])) {
+	    die('Error: rssTitlePerAlbum not set in config.ini');
+	}
+	if(empty($config['rssDescriptionPerAlbum'])) {
+	    die('Error: rssDescriptionPerAlbum not set in config.ini');
+	}
+	
+	$this->generalTitle = $config['rssTitle'];
+	$this->generalDescription = $config['rssDescription'];
+	$this->titlePerAlbum	= $config['rssTitlePerAlbum'];
+	$this->descriptionPerAlbum = $config['rssDescriptionPerAlbum'];
+    }
     
     public function buildRssFeedLatestPhotos($photos) {
-	$feed = $this->prepareFeed('Lychee - Latest public photos');
+	$feed = $this->prepareFeed($this->generalTitle, $this->generalDescription);
 	
 	while ($photo = $photos->fetch_assoc()) {
 	    $newItem = $this->createPhotoItem($feed, $photo);
@@ -18,7 +42,9 @@ class RssGenerator
     
     public function buildRssFeedForAlbum($name, $photos)
     {
-	$feed = $this->prepareFeed('Lychee - Latest photos in album ' . $name);
+	$title = str_replace("{albumName}", $name, $this->titlePerAlbum);
+	$description = str_replace("{albumName}", $name, $this->descriptionPerAlbum);
+	$feed = $this->prepareFeed($title, $description);
 	
 	while ($photo = $photos->fetch_assoc()) {
 	    $newItem = $this->createPhotoItem($feed, $photo);
@@ -36,21 +62,21 @@ class RssGenerator
 	}
 
 	# set photo link
-	$photoUrl = $this->getCurrentUrl() . $parseUrl['path'] . "../../#" . $photo['albumId'] . "/" . $photo['photoId'];
+	$photoUrl = $this->getCurrentUrl() . "../../#" . $photo['albumId'] . "/" . $photo['photoId'];
 	$newItem->setLink($photoUrl);
 
 	# set photo upload date
-	$date = date('d M. Y', substr($photo['photoId'], 0, -4)); #TODO: How to get real datetime here?
+	$date = date('d M. Y H:i:s', substr($photo['photoId'], 0, -4));
 	$newItem->setDate($date);
 
 	return $newItem;
     }
     
-    private function prepareFeed($title) {
+    private function prepareFeed($title, $description) {
 	$feed = new RSS2;
 	$feed->setTitle($title);
 	$feed->setLink($this->getCurrentUrl());
-	$feed->setDescription('This feed contains the latest lychee photos');
+	$feed->setDescription($description);
 	$feed->setDate(date(DATE_RSS, time()));
 	$feed->setChannelElement('pubDate', date(\DATE_RSS, strtotime('today midnight')));
 	

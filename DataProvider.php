@@ -6,8 +6,16 @@ class DataProvider {
     private $settings = null;
 
     public function __construct($dbHost, $dbUser, $dbPassword, $dbName) {
+	# Define
+	defineTablePrefix($dbTablePrefix);
+	
 	# Connect
 	$this->database = Database::connect($dbHost, $dbUser, $dbPassword, $dbName);
+	
+	# Check connection
+	if ($database->connect_errno) {
+	    die('Error: Could not connect to the lychee database. Is the path to lychee correct? ' . $database->connect_error);
+	}
 
 	# Load settings
 	$settings = new Settings($this->database);
