@@ -41,8 +41,8 @@ If you want you can configure the title and description of the RSS-Feeds by chan
 |:-----------|:------------|
 | rssTitle | The title of the global RSS-Feed |
 | rssDescription | The description of the global RSS-Feed |
-| rssTitlePerAlbum | The title of the RSS-Feed for an album. The variable `{albumName}` will be replace with the album name |
-| rssDescriptionPerAlbum | The description of the RSS-Feed for an album. The variable `{albumName}` will be replace with the album name |
+| rssTitlePerAlbum | The title of the RSS-Feed for an album. The variable `{albumName}` will be replaced with the album name |
+| rssDescriptionPerAlbum | The description of the RSS-Feed for an album. The variable `{albumName}` will be replaced with the album name |
 
 ## License
 
