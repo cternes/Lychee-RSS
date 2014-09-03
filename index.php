@@ -27,7 +27,7 @@ require('vendor/autoload.php');
 header('Content-type: application/rss+xml');
 
 $rssGenerator = new RssGenerator($config);
-$dataProvider = new DataProvider($dbHost, $dbUser, $dbPassword, $dbName);
+$dataProvider = new DataProvider($dbHost, $dbUser, $dbPassword, $dbName, $dbTablePrefix);
 # If a album name is provided, we'll create a feed only for this album
 if(!empty($_GET['album'])) {
     $albums = $dataProvider->getPublicAlbums();
