@@ -8,7 +8,7 @@
 ###
 
 # Config
-if (file_exists('config.ini')) {
+if (is_readable('config.ini')) {
     $config = parse_ini_file('config.ini');
 }
 else {
