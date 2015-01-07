@@ -69,6 +69,11 @@ class RssGenerator
 	$date = date('d M. Y H:i:s', substr($photo['photoId'], 0, -4));
 	$newItem->setDate($date);
 
+	if ($config['rssPhotoURL'] == true) {
+		$photoFileUrl = $this->getCurrentUrl() . "../../uploads/big/" . $photo['photoUrl'];
+		$newItem->setChannelElement('photoURL', $photoFileUrl);
+	}
+
 	return $newItem;
     }
     
