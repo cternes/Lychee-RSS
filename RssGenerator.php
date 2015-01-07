@@ -27,6 +27,7 @@ class RssGenerator
 	$this->generalDescription = $config['rssDescription'];
 	$this->titlePerAlbum	= $config['rssTitlePerAlbum'];
 	$this->descriptionPerAlbum = $config['rssDescriptionPerAlbum'];
+	$this->photoUrl = $config['rssPhotoUrl'];
     }
     
     public function buildRssFeedLatestPhotos($photos) {
@@ -69,9 +70,9 @@ class RssGenerator
 	$date = date('d M. Y H:i:s', substr($photo['photoId'], 0, -4));
 	$newItem->setDate($date);
 
-	if ($config['rssPhotoURL'] == true) {
+	if (photoUrl == true) {
 		$photoFileUrl = $this->getCurrentUrl() . "../../uploads/big/" . $photo['photoUrl'];
-		$newItem->setChannelElement('photoURL', $photoFileUrl);
+		$newItem->addElement('photoURL', $photoFileUrl);
 	}
 
 	return $newItem;
