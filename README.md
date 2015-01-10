@@ -47,7 +47,7 @@ If you want you can configure the title and description of the RSS-Feeds by chan
 
 ## (Optional) JSON Output
 
-If you want the feed in json representation, you can pass the output format in the get request.
+If you want to have the RSS-Feed in json representation, you can pass the output format to the RSS-Generator (_Note:_ RSS-Readers will not understand this format)
 
 	http://myserver/lychee/plugins/rss?format=json
 
