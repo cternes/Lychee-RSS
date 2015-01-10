@@ -20,13 +20,19 @@ require($config['lychee'] . 'php/define.php');
 require($config['lychee'] . 'php/autoload.php');
 require($config['lychee'] . 'data/config.php');
 require('RssGenerator.php');
+require('JsonGenerator.php');
 require('DataProvider.php');
 require('vendor/autoload.php');
 
 # Set Mime Type
-header('Content-type: application/rss+xml');
+if (!empty($_GET['format']) && $_GET['format'] === "json") {
+    header('Content-Type: application/json');
+} else {
+    header('Content-type: application/rss+xml');
+}
 
 $rssGenerator = new RssGenerator($config);
+$jsonGenerator = new JsonGenerator($config);
 $dataProvider = new DataProvider($dbHost, $dbUser, $dbPassword, $dbName, $dbTablePrefix);
 # If a album name is provided, we'll create a feed only for this album
 if(!empty($_GET['album'])) {
@@ -38,16 +44,27 @@ if(!empty($_GET['album'])) {
     }
     
     $photos = $dataProvider->getPhotosByAlbum($albumId);
-    # Generate RSS
-    echo $rssGenerator->buildRssFeedForAlbum($_GET['album'], $photos);
+
+    if (!empty($_GET['format']) && $_GET['format'] === "json") {
+        # Generate RSS as JSON
+        echo $jsonGenerator->buildJsonFeedForAlbum($_GET['album'], $photos);
+    } else {
+        # Generate RSS
+        echo $rssGenerator->buildRssFeedForAlbum($_GET['album'], $photos);
+    }
 }
 # If no album name is provided, we'll create a feed with all public photos
 else {
     # Get latest photos
     $photos = $dataProvider->getPhotostream();
 
-    # Generate RSS
-    echo $rssGenerator->buildRssFeedLatestPhotos($photos);
+    if (!empty($_GET['format']) && $_GET['format'] === "json") {
+        # Generate RSS as JSON
+        echo $jsonGenerator->buildJsonFeedLatestPhotos($photos);
+    } else {
+        # Generate RSS
+        echo $rssGenerator->buildRssFeedLatestPhotos($photos);
+    }
 }
 
 function getAlbumIdByName($albums, $name) {

@@ -24,7 +24,7 @@ class DataProvider {
 
     public function getPhotostream() {
 	# Get latest photos
-	$query = Database::prepare($this->database, 'SELECT p.id as photoId, p.title, p.description, a.id as albumId FROM ? p LEFT OUTER JOIN ? a ON p.album = a.id WHERE a.public = 1 ORDER BY p.id DESC LIMIT 50', array(LYCHEE_TABLE_PHOTOS, LYCHEE_TABLE_ALBUMS));
+	$query = Database::prepare($this->database, 'SELECT p.id as photoId, p.url as photoUrl, p.title, p.description, a.id as albumId FROM ? p LEFT OUTER JOIN ? a ON p.album = a.id WHERE a.public = 1 ORDER BY p.id DESC LIMIT 50', array(LYCHEE_TABLE_PHOTOS, LYCHEE_TABLE_ALBUMS));
 	$photos = $this->database->query($query);
 	if (!$photos) {
 	    Log::error($this->database, __METHOD__, __LINE__, $this->database->error);
@@ -34,7 +34,7 @@ class DataProvider {
     }
 
     public function getPhotosByAlbum($albumId) {
-	$query = Database::prepare($this->database, 'SELECT p.id as photoId, p.title, p.description, p.album as albumId FROM ? p WHERE p.album = ? ORDER BY p.id DESC LIMIT 50', array(LYCHEE_TABLE_PHOTOS, $albumId));
+	$query = Database::prepare($this->database, 'SELECT p.id as photoId, p.url as photoUrl, p.title, p.description, p.album as albumId FROM ? p WHERE p.album = ? ORDER BY p.id DESC LIMIT 50', array(LYCHEE_TABLE_PHOTOS, $albumId));
 	$photos = $this->database->query($query);
 	if (!$photos) {
 	    Log::error($this->database, __METHOD__, __LINE__, $this->database->error);

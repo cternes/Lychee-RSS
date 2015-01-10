@@ -43,6 +43,13 @@ If you want you can configure the title and description of the RSS-Feeds by chan
 | rssDescription | The description of the global RSS-Feed |
 | rssTitlePerAlbum | The title of the RSS-Feed for an album. The variable `{albumName}` will be replaced with the album name |
 | rssDescriptionPerAlbum | The description of the RSS-Feed for an album. The variable `{albumName}` will be replaced with the album name |
+| rssfilePhotoUrl | If set, a element with the file url to the photo is add to the item |
+
+## (Optional) JSON Output
+
+If you want the feed in json representation, you can pass the output format in the get request.
+
+	http://myserver/lychee/plugins/rss?format=json
 
 ## License
 

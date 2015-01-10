@@ -1,8 +1,6 @@
 <?php
 
-use \FeedWriter\RSS2;
-
-class RssGenerator
+class JsonGenerator
 {
     private $generalTitle = null;
     private $generalDescription = null;
@@ -31,64 +29,64 @@ class RssGenerator
 	$this->filePhotoUrl = $config['rssfilePhotoUrl'];
     }
     
-    public function buildRssFeedLatestPhotos($photos) {
-	$feed = $this->prepareFeed($this->generalTitle, $this->generalDescription);
+    public function buildJsonFeedLatestPhotos($photos) {
+	$jsonObject = $this->prepareFeed($this->generalTitle, $this->generalDescription);
 	
+	$items = array();
 	while ($photo = $photos->fetch_assoc()) {
-	    $newItem = $this->createPhotoItem($feed, $photo);
-	    $feed->addItem($newItem);
+	    $items[] = $this->createPhotoItem($photo);
 	}
+	$jsonObject['items'] = $items;
 	
-	return $feed->generateFeed();
+	echo json_encode($jsonObject);
     }
     
-    public function buildRssFeedForAlbum($name, $photos)
+    public function buildJsonFeedForAlbum($name, $photos)
     {
 	$title = str_replace("{albumName}", $name, $this->titlePerAlbum);
 	$description = str_replace("{albumName}", $name, $this->descriptionPerAlbum);
-	$feed = $this->prepareFeed($title, $description);
+	$jsonObject = $this->prepareFeed($title, $description);
 	
+	$items = array();
 	while ($photo = $photos->fetch_assoc()) {
-	    $newItem = $this->createPhotoItem($feed, $photo);
-	    $feed->addItem($newItem);
+	    $items[] = $this->createPhotoItem($photo);
 	}
+	$jsonObject['items'] = $items;
 	
-	return $feed->generateFeed();
+	echo json_encode($jsonObject);
     }
     
-    private function createPhotoItem($feed, $photo) {
-	$newItem = $feed->createNewItem();
-	$newItem->setTitle($photo['title']);
+    private function createPhotoItem($photo) {
+    $newItem = array();
+
+	$newItem['title'] = $photo['title'];
 	if (!empty($photo['description'])) {
-	    $newItem->setDescription($photo['description']);
+	    $newItem['description'] = $photo['description'];
 	}
 
 	# set photo link
-	$photoUrl = $this->getCurrentUrl() . "../../#" . $photo['albumId'] . "/" . $photo['photoId'];
-	$newItem->setLink($photoUrl);
+	$newItem['photoUrl'] = $this->getCurrentUrl() . "../../#" . $photo['albumId'] . "/" . $photo['photoId'];
 
 	# set photo upload date
-	$date = date('d M. Y H:i:s', substr($photo['photoId'], 0, -4));
-	$newItem->setDate($date);
-	
+	$newItem['pubDate'] = date('d M. Y H:i:s', substr($photo['photoId'], 0, -4));
+ 
  	# if set, add file link to photo
-	if($this->filePhotoUrl) {
-		$photoFileUrl = $this->getCurrentUrl() . "../../uploads/big/" . $photo['photoUrl'];
-		$newItem->addElement('photoURL', $photoFileUrl);
+	if ($this->filePhotoUrl) {
+		$newItem['photoFileUrl'] = $this->getCurrentUrl() . "../../uploads/big/" . $photo['photoUrl'];
 	}
 
 	return $newItem;
     }
     
     private function prepareFeed($title, $description) {
-	$feed = new RSS2;
-	$feed->setTitle($title);
-	$feed->setLink($this->getCurrentUrl());
-	$feed->setDescription($description);
-	$feed->setDate(date(DATE_RSS, time()));
-	$feed->setChannelElement('pubDate', date(\DATE_RSS, strtotime('today midnight')));
+	$jsonObject = array();
+	$jsonObject['title'] = $title;
+	$jsonObject['link'] = $this->getCurrentUrl();
+	$jsonObject['description'] = $description;
+	$jsonObject['date'] = date(DATE_RSS, time());
+	$jsonObject['pubDate'] = date(\DATE_RSS, strtotime('today midnight'));
 	
-	return $feed;
+	return $jsonObject;
     }
     
     private function getCurrentUrl() {
