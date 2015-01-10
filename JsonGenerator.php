@@ -57,7 +57,7 @@ class JsonGenerator
     }
     
     private function createPhotoItem($photo) {
-    $newItem = array();
+	$newItem = array();
 
 	$newItem['title'] = $photo['title'];
 	if (!empty($photo['description'])) {
