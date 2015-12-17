@@ -68,7 +68,7 @@ else {
 }
 
 function getAlbumIdByName($albums, $name) {
-    foreach ($albums['content'] as $album) {
+    foreach ($albums['albums'] as $album) {
 	if(strtolower($album['title']) === strtolower($name)) {
 	    return $album['id'];
 	}
