@@ -76,6 +76,15 @@ class RssGenerator
 		$photoFileUrl = $this->getCurrentUrl() . "../../uploads/big/" . $photo['photoUrl'];
 		$newItem->addElement('photoURL', $photoFileUrl);
 	}
+	
+	$aImageData = getimagesize("../../uploads/big/" . $photo['photoUrl']);
+	$attributes = Array(
+		'url' => $this->getCurrentUrl() . "../../uploads/big/" . $photo['photoUrl'],
+		'width' => $aImageData[0],
+		'height' => $aImageData[1],
+		'type' => $aImageData['mime'],
+	);
+	$newItem->addElement('media:content', null, $attributes);
 
 	return $newItem;
     }
@@ -87,13 +96,15 @@ class RssGenerator
 	$feed->setDescription($description);
 	$feed->setDate(date(DATE_RSS, time()));
 	$feed->setChannelElement('pubDate', date(\DATE_RSS, strtotime('today midnight')));
+	$feed->addNamespace('media', 'http://search.yahoo.com/mrss/');
+	$feed->addNamespace('atom', 'http://www.w3.org/2005/Atom');
 	
 	return $feed;
     }
     
     private function getCurrentUrl() {
 	$parseUrl = parse_url("http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-	return $parseUrl['scheme'] . "://" . $parseUrl['host'] . ":" . $parseUrl['port'] . $parseUrl['path'];
+	return $parseUrl['scheme'] . "://" . $parseUrl['host'] . (isset($parseUrl['port']) ? (":" . $parseUrl['port']) : "") . $parseUrl['path'];
     }
 }
 ?>
