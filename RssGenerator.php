@@ -97,7 +97,6 @@ class RssGenerator
 	$feed->setDate(date(DATE_RSS, time()));
 	$feed->setChannelElement('pubDate', date(\DATE_RSS, strtotime('today midnight')));
 	$feed->addNamespace('media', 'http://search.yahoo.com/mrss/');
-	$feed->addNamespace('atom', 'http://www.w3.org/2005/Atom');
 	
 	return $feed;
     }
