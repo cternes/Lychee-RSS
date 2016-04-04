@@ -20,6 +20,8 @@ else {
 require($config['lychee'] . 'php/define.php');
 require($config['lychee'] . 'php/autoload.php');
 require($config['lychee'] . 'data/config.php');
+
+
 require('RssGenerator.php');
 require('JsonGenerator.php');
 require('DataProvider.php');
@@ -37,8 +39,7 @@ $jsonGenerator = new JsonGenerator($config);
 $dataProvider = new DataProvider();
 # If a album name is provided, we'll create a feed only for this album
 if(!empty($_GET['album'])) {
-    $albums = $dataProvider->getPublicAlbums();
-    $albumId = getAlbumIdByName($albums, $_GET['album']);
+    $albumId = $dataProvider->getAlbumIdByName($_GET['album']);
     
     if(empty($albumId)) {
 	die('Could not find a public album with title: ' .$_GET['album'] . '. Please make sure that this album exists and that it is public!');
@@ -65,14 +66,6 @@ else {
     } else {
         # Generate RSS
         echo $rssGenerator->buildRssFeedLatestPhotos($photos);
-    }
-}
-
-function getAlbumIdByName($albums, $name) {
-    foreach ($albums['albums'] as $album) {
-	if(strtolower($album['title']) === strtolower($name)) {
-	    return $album['id'];
-	}
     }
 }
 

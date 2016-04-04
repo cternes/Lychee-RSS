@@ -2,6 +2,8 @@
 
 use Lychee\Modules\Database;
 use Lychee\Modules\Settings;
+use Lychee\Modules\Log;
+use Lychee\Modules\Album;
 
 class DataProvider {
 
@@ -26,10 +28,22 @@ class DataProvider {
 	return $photos;
     }
 
-    public function getPublicAlbums() {
-	$album = new Album(Database::get(), null, Settings::get(), null);
-	return $album->getAll(true);
-    }
+	public function getAlbumIdByName($albumName){
+		$query = Database::prepare(Database::get(), 'SELECT a.id AS albumId FROM ? a WHERE a.title="?" LIMIT 1', array(LYCHEE_TABLE_ALBUMS, mysqli_real_escape_string(Database::get(),$albumName)));
+		$oResAlbumId = Database::get()->query($query);
+		if (!$oResAlbumId) {
+			Log::error(Database::get(), __METHOD__, __LINE__, Database::get()->error);
+			die('Error: Could not fetch the album id from album name "' . $albumName . '" from the database.');
+		}
+
+		$lineAlbumId = $oResAlbumId->fetch_assoc();
+		if(empty($lineAlbumId)){
+			Log::error(Database::get(), __METHOD__, __LINE__, Database::get()->error);
+			die('Error: the query result is empty for the album name "' . $albumName . '".');
+		}
+		
+		return $lineAlbumId['albumId'];
+	}
 
 }
 
