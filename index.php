@@ -16,6 +16,7 @@ else {
 }
 
 # Include
+
 require($config['lychee'] . 'php/define.php');
 require($config['lychee'] . 'php/autoload.php');
 require($config['lychee'] . 'data/config.php');
@@ -33,7 +34,7 @@ if (!empty($_GET['format']) && $_GET['format'] === "json") {
 
 $rssGenerator = new RssGenerator($config);
 $jsonGenerator = new JsonGenerator($config);
-$dataProvider = new DataProvider($dbHost, $dbUser, $dbPassword, $dbName, $dbTablePrefix);
+$dataProvider = new DataProvider();
 # If a album name is provided, we'll create a feed only for this album
 if(!empty($_GET['album'])) {
     $albums = $dataProvider->getPublicAlbums();
