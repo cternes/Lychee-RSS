@@ -64,7 +64,7 @@ class RssGenerator
 	}
 
 	# set photo link
-	$photoUrl = $this->getCurrentUrl("#" . $photo['albumId'] . "/" . $photo['photoId']);
+	$photoUrl = $this->getCurrentUrl("../../#" . $photo['albumId'] . "/" . $photo['photoId']);
 	$newItem->setLink($photoUrl);
 
 	# set photo upload date
