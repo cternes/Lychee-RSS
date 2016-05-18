@@ -64,7 +64,7 @@ class RssGenerator
 	}
 
 	# set photo link
-	$photoUrl = $this->getCurrentUrl() . "../../#" . $photo['albumId'] . "/" . $photo['photoId'];
+	$photoUrl = $this->getCurrentUrl("../../#" . $photo['albumId'] . "/" . $photo['photoId']);
 	$newItem->setLink($photoUrl);
 
 	# set photo upload date
@@ -73,13 +73,13 @@ class RssGenerator
 	
  	# if set, add file link to photo
 	if($this->filePhotoUrl) {
-		$photoFileUrl = $this->getCurrentUrl() . "../../uploads/big/" . $photo['photoUrl'];
+		$photoFileUrl = $this->getCurrentUrl("../../uploads/big/" . $photo['photoUrl']);
 		$newItem->addElement('photoURL', $photoFileUrl);
 	}
 	
 	$aImageData = getimagesize("../../uploads/big/" . $photo['photoUrl']);
 	$attributes = Array(
-		'url' => $this->getCurrentUrl() . "../../uploads/big/" . $photo['photoUrl'],
+		'url' => $this->getCurrentUrl("../../uploads/big/" . $photo['photoUrl']),
 		'width' => $aImageData[0],
 		'height' => $aImageData[1],
 		'type' => $aImageData['mime'],
@@ -101,9 +101,9 @@ class RssGenerator
 	return $feed;
     }
     
-    private function getCurrentUrl() {
+    private function getCurrentUrl($page = '') {
 	$parseUrl = parse_url("http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-	return $parseUrl['scheme'] . "://" . $parseUrl['host'] . (isset($parseUrl['port']) ? (":" . $parseUrl['port']) : "") . $parseUrl['path'];
+	return $parseUrl['scheme'] . "://" . $parseUrl['host'] . (isset($parseUrl['port']) ? (":" . $parseUrl['port']) : "") . ($page == '' ? $parseUrl['path'] : (dirname($parseUrl['path']) . '/' . $page));
     }
 }
 ?>
